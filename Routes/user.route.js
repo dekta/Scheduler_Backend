@@ -34,7 +34,7 @@ UserRouter.post('/signup',validate, async (req, res) => {
     if(!check.length){
         bcrypt.hash(password, 6, async function (err, hash) {
             if (err) {
-                res.status(500).send({ 'msg': "Something went wrong" })
+                res.status(500).send({ 'msg': "Something went wrong in signup" })
             }
             else {
                 try {
@@ -91,7 +91,7 @@ UserRouter.post('/signup',validate, async (req, res) => {
                         if (error) {
                             console.log('ERR: Error from nodemailer')
                             console.log(error)
-                            res.status(500).send({ "msg": "Something went wrong" })
+                            res.status(500).send({ "msg": "Something went wrong in mail sending" })
                         } else {
                             console.log('Email Sent Successfully');
                             res.status(201).send({ "msg": `Signup Successfully`, "email": email })
