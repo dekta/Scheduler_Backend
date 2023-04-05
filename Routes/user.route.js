@@ -139,7 +139,7 @@ UserRouter.post('/login', async (req, res) => {
 
 
    
-    console.log(student)
+    //sconsole.log(student)
 
    
     if (user) {
@@ -156,8 +156,9 @@ UserRouter.post('/login', async (req, res) => {
                     let filter = {email:email}
                     await UserModel.findOneAndUpdate(filter,update)
 
-                    res.cookie("token",token,{httpOnly:true})
-                    res.setHeader("token",token)
+                    //res.cookie("token",token,{httpOnly:true})
+                    localStorage.setItem("token", token);
+                   
                     res.status(201).send({"msg":"Login successfull","username":user.name,"userEmail":user.email,"userdet":user,"extdet":userdetials })
                 }
                 else {
@@ -190,9 +191,10 @@ UserRouter.get("/logout",async(req,res)=>{
                     let update = {isActive:false}
                     let filter = {email:email}
                     await UserModel.findOneAndUpdate(filter,update)
-                    res.clearCookie('token');
+                    //res.clearCookie('token');
+                    localStorage.removeItem("token");
                     
-                    res.sendStatus(200);
+                    res.sendStatus({"msg":"logout successfully"});
        
                 }
             })
