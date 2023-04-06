@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 require('dotenv').config()
 var cookieParser = require('cookie-parser')
 const Redis = require('ioredis');
-
+const cors = require("cors");
 
 const redis = new Redis({
     port: 14080,
@@ -19,6 +19,9 @@ const {UserModel}=require('../Models/User.model');
 const UserRouter = express.Router()
 
 UserRouter.use(cookieParser())
+UserRouter.use(cors({
+    origin: '*'
+}))
 
 const {validate} = require('../middlewares/signup_validate');
 const { TeacherModel } = require('../Models/teacher.model');
