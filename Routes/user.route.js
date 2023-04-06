@@ -295,7 +295,7 @@ UserRouter.post('/verifyOTP', async (req, res) => {
 
 UserRouter.post('/changePassword',async(req,res)=>{
     let {password} = req.body
-    let email = req.cookies.VerifyEmail
+    let email = await redis.get('email')
     
     try{
         if(email){
