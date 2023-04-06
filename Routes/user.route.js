@@ -247,8 +247,9 @@ UserRouter.post('/forgotPasword',async (req,res)=>{
                 res.status(500).send({ "msg": "Something went wrong with message service" })
             } else {
                 console.log('Email Sent Successfully');
-                res.cookie("VerifyOtp",otp,{httpOnly:true})
-                res.cookie("VerifyEmail",email,{httpOnly:true})
+                // res.cookie("VerifyOtp",otp,{httpOnly:true})
+                // res.cookie("VerifyEmail",email,{httpOnly:true})
+                redis.set('otp',otp)
                 res.status(201).send({ "msg": `otp send`, "email": email })
 
             }
@@ -265,11 +266,16 @@ UserRouter.post('/forgotPasword',async (req,res)=>{
 //verify OTP
 UserRouter.post('/verifyOTP', async (req, res) => {
     let { otp } = req.body;
+    //console.log(otp)
     if (!otp) return res.status(401).send({ 'msg': "Please enter otp" })
     try {
-        const VerifyOtp = req.cookies.VerifyOtp;
-        if(otp === VerifyOtp){
-             res.clearCookie('VerifyOtp');
+        // const VerifyOtp = req.cookies.VerifyOtp;
+        const VerifyOtp = await redis.get('otp')
+        console.log(VerifyOtp )
+        if(+otp === +VerifyOtp){
+            //console.log("check")
+            //  res.clearCookie('VerifyOtp');
+            await redis.getdel('otp')
             res.status(200).send({ "msg": 'otp Verified' })
         }
     }
