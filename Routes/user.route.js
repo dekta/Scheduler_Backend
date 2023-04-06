@@ -20,7 +20,7 @@ const UserRouter = express.Router()
 
 UserRouter.use(cookieParser())
 UserRouter.use(cors({
-    origin: 'http://127.0.0.1:5501',
+    origin: '*',
     credentials: true,
 }))
 
@@ -254,6 +254,7 @@ UserRouter.post('/forgotPasword',async (req,res)=>{
                 // res.cookie("VerifyOtp",otp,{httpOnly:true})
                 // res.cookie("VerifyEmail",email,{httpOnly:true})
                 redis.set('otp',otp)
+                redis.set('email',email)
                 res.status(201).send({ "msg": `otp send`, "email": email })
 
             }
@@ -295,7 +296,7 @@ UserRouter.post('/verifyOTP', async (req, res) => {
 UserRouter.post('/changePassword',async(req,res)=>{
     let {password} = req.body
     let email = req.cookies.VerifyEmail
-    //console.log(password,email)
+    
     try{
         if(email){
            
@@ -307,7 +308,8 @@ UserRouter.post('/changePassword',async(req,res)=>{
                     let update = {password:hash}
                     let filter = {email:email}
                     await UserModel.findOneAndUpdate(filter,update)
-                    res.clearCookie('VerifyEmail');
+                    //res.clearCookie('VerifyEmail');
+                    await redis.getdel('email')
                     res.status(200).send({ "msg": 'password updated' })
                 }
 
