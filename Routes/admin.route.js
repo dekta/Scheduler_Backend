@@ -24,7 +24,7 @@ AdminRouter.get("/allusers", async(req,res)=>{
 //All Reg. teachers
 AdminRouter.get("/allRegTeacher", async(req,res)=>{
     try{
-        const teachers= await TeacherModel.find()
+        const teachers= await TeacherModel.find({ispermanent:false})
         res.status(201).send({"teachers":teachers});
     }
     catch(err){
