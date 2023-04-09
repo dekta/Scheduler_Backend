@@ -140,12 +140,8 @@ UserRouter.post('/login', async (req, res) => {
     if(stats===false){
         userdetials=student
     }
-
-
-   
     console.log(student)
 
-   
     if (user) {
         try {
             bcrypt.compare(password, user.password, async function (err, result) {
@@ -162,7 +158,7 @@ UserRouter.post('/login', async (req, res) => {
 
                     res.cookie("token",token,{httpOnly:true})
                    
-                    res.status(201).send({"msg":"Login successfull","username":user.name,"userEmail":user.email,"userdet":user,"extdet":userdetials })
+                    res.status(201).send({"msg":"Login successfull","username":user.name,"userEmail":user.email,"userdet":user,"extdet":userdetials,"isAdmin":user.isAdmin })
                 }
                 else {
                     res.send({ 'msg': "incorrect password" })
@@ -330,3 +326,7 @@ UserRouter.post('/changePassword',async(req,res)=>{
 
 
 module.exports = { UserRouter}
+
+
+
+//https://ik.imagekit.io/8scvrlvcy/path/to/myimage.jpg
