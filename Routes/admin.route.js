@@ -48,6 +48,18 @@ AdminRouter.patch("/makePermanent", async(req,res)=>{
    
 })
 
+
+// allPermanentTeacher
+AdminRouter.get("/allperTeacher", async(req,res)=>{
+    try{
+        const teachers= await TeacherModel.find({ispermanent:true})
+        res.status(201).send({"teachers":teachers});
+    }
+    catch(err){
+        res.status(500).json({message: 'Internal server error'});
+    }
+})
+
 //delete teacher
 AdminRouter.delete("/deleteTeacher", async(req,res)=>{
     const id  = req.body.Teacher_Booking_id ;
