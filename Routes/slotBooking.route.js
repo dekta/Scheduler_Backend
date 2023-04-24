@@ -5,7 +5,7 @@ const BookingRouter = express.Router();
 const {BookingModel}  = require("../Models/booking")
 const {CourseModel} = require("../Models/course.model")
 const {TeacherModel} = require("../Models/teacher.model")
-
+const {StudentModel} = require("../Models/student.model")
 
 
 
@@ -97,7 +97,7 @@ BookingRouter.post("/slotBooking", async(req,res)=>{
             res.status(201).send({"msg":"Slots are full"})
         }
 
-        let book = new BookingModel({StudentName, email,phone,courseName,teacherName,Teacher_Booking_id,duration:duration,fees:fees, startDate})
+        let book = new BookingModel({StudentName, email,phone,courseName,teacherName,Teacher_Booking_id,duration:duration,fees:fees, startDate,feeStatus:true})
         await book.save()
     
         res.send({"msg":"Booking Confirmed","avail":teacherAvail})

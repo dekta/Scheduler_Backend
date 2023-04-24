@@ -52,6 +52,7 @@ UserRouter.post('/signup',validate, async (req, res) => {
                     console.log(u._id,"hi")
 
                     const signupToken = jwt.sign({userid:u._id,email:email,name:name}, process.env.Signup_pass)
+                    console.log(signupToken)
                     redis.set('signupToken',signupToken)
 
 
@@ -158,7 +159,7 @@ UserRouter.post('/login', async (req, res) => {
 
                     res.cookie("token",token,{httpOnly:true})
                    
-                    res.status(201).send({"msg":"Login successfull","username":user.name,"userEmail":user.email,"userdet":user,"extdet":userdetials,"isAdmin":user.isAdmin })
+                    res.status(201).send({"msg":"Login successfull","username":user.name,"userEmail":user.email,"userdet":user,"extdet":userdetials,"isAdmin":user.isAdmin,"token":token })
                 }
                 else {
                     res.send({ 'msg': "incorrect password" })

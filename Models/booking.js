@@ -13,7 +13,8 @@ const bookingSchema  =  mongoose.Schema({
     courseName:String,
     duration:String,
     fees:Number,
-    slot:String
+    slot:String,
+    feeStatus:{type:Boolean, default:false}
 
 })
 

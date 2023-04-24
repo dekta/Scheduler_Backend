@@ -19,7 +19,8 @@ const studentSchema  =  mongoose.Schema({
     courseDetails:{
         courseName:String,
         price:Number
-    }
+    },
+   
 
 })
 
