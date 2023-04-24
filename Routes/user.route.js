@@ -179,11 +179,11 @@ UserRouter.post('/login', async (req, res) => {
 
 
 //logout
-UserRouter.get("/logout",async(req,res)=>{
+UserRouter.post("/logout",async(req,res)=>{
     //console.log("logout")
     
     try{
-        const token = req.cookies.token;
+        const token = req.cookies.token || req.body;
         console.log(token)
         if(token){
             jwt.verify(token,process.env.Token_Pass,async function(err,decoded){
