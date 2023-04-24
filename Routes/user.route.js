@@ -160,7 +160,7 @@ UserRouter.post('/login', async (req, res) => {
 
                     res.cookie("token",token,{httpOnly:true})
                    
-                    res.status(201).send({"msg":"Login successfull","username":user.name,userdetails:userdetails,"token":token,isActive:true})
+                    res.status(201).send({"msg":"Login successfull","username":user.name,userdetails:userdetails,"token":token,isActive:true,"avatar":user.avatar})
                 }
                 else {
                     res.send({ 'msg': "incorrect password" })
