@@ -49,7 +49,7 @@ UserRouter.post('/signup',validate, async (req, res) => {
 
 
                     let u = await UserModel.findOne({email})
-                    console.log(u._id,"hi")
+                    //console.log(u._id,"hi")
 
                     const signupToken = jwt.sign({userid:u._id,email:email,name:name}, process.env.Signup_pass)
                     console.log(signupToken)
@@ -123,25 +123,27 @@ UserRouter.post('/signup',validate, async (req, res) => {
 UserRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await UserModel.findOne({ email });
-    const teacher =  await TeacherModel.find({});
-    const student = await StudentModel.find({'studentDetail.email': email})
-    
-    let u 
-    let stats  = false
-    let userdetials 
-    for(let i=0;i<teacher.length;i++){
-        let ele = teacher[i]
-        if(ele.teacherDetail.email==email){
-            u = ele._id 
-            stats = true
-            userdetials=ele
-            break      
-        }
-    }
-    if(stats===false){
-        userdetials=student
-    }
-    console.log(student)
+    const teacher =  await TeacherModel.findOne({'teacherDetail.email': email});
+    const student = await StudentModel.findOne({'studentDetail.email': email})
+    // console.log("teacher:",teacher)
+    // console.log("student:",student)
+    // let u 
+    // let stats  = false
+    let userdetails  = teacher || student
+    console.log(userdetails)
+    // for(let i=0;i<teacher.length;i++){
+    //     let ele = teacher[i]
+    //     if(ele.teacherDetail.email==email){
+    //         u = ele._id 
+    //         stats = true
+    //         userdetials=ele
+    //         break      
+    //     }
+    // }
+    // if(stats===false){
+    //     userdetials=student
+    // }
+    //console.log(student)
 
     if (user) {
         try {
@@ -151,15 +153,14 @@ UserRouter.post('/login', async (req, res) => {
                     res.status(500).send({ 'msg': "Something went wrong" })
                 }
                 else if (result) {
-                    const token = jwt.sign({userid:u,email:user.email,isAdmin:user.isAdmin,name:user.name,email:user.email }, process.env.Token_Pass, { expiresIn: '5d' })
-
+                    const token = jwt.sign({userid:userdetails._id,isAdmin:user.isAdmin,isActive:true,email:user.email}, process.env.Token_Pass, { expiresIn: '5d' })
                     let update = {isActive:true}
                     let filter = {email:email}
                     await UserModel.findOneAndUpdate(filter,update)
 
                     res.cookie("token",token,{httpOnly:true})
                    
-                    res.status(201).send({"msg":"Login successfull","username":user.name,"userEmail":user.email,"userdet":user,"extdet":userdetials,"isAdmin":user.isAdmin,"token":token })
+                    res.status(201).send({"msg":"Login successfull","username":user.name,userdetails:userdetails,"token":token,isActive:true})
                 }
                 else {
                     res.send({ 'msg': "incorrect password" })
@@ -179,8 +180,11 @@ UserRouter.post('/login', async (req, res) => {
 
 //logout
 UserRouter.get("/logout",async(req,res)=>{
+    //console.log("logout")
+    
     try{
         const token = req.cookies.token;
+        console.log(token)
         if(token){
             jwt.verify(token,process.env.Token_Pass,async function(err,decoded){
                 if(err){
@@ -191,9 +195,9 @@ UserRouter.get("/logout",async(req,res)=>{
                     let update = {isActive:false}
                     let filter = {email:email}
                     await UserModel.findOneAndUpdate(filter,update)
-                    res.clearCookie('token');
-                    
-                    res.sendStatus({"msg":"logout successfully"});
+                    res.clearCookie('token'); 
+                    //res.send("done")
+                    res.status(201).send({"msg":"logout successfully"});
        
                 }
             })

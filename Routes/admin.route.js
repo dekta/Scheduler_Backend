@@ -121,5 +121,16 @@ AdminRouter.get("/allBooking", async(req,res)=>{
     }
 })
 
+// Active user
+AdminRouter.get("/activeUser", async(req,res)=>{
+    try{
+        const active = await UserModel.find({isActive:true})
+        res.status(201).send({"active":active});
+    }
+    catch(err){
+        console.log(err)
+    }
+})
+
 
 module.exports = {AdminRouter} ;
