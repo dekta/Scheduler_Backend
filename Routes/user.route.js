@@ -20,8 +20,7 @@ const UserRouter = express.Router()
 
 UserRouter.use(cookieParser())
 UserRouter.use(cors({
-    origin: '*',
-    credentials: true,
+    origin: '*'
 }))
 
 const {validate} = require('../middlewares/signup_validate');
