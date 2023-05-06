@@ -71,7 +71,7 @@ app.listen(8090, async () => {
     try {
       await connection;
       console.log("connected to db");
-      console.log("listening in port 9090");
+      console.log("listening in port 8090");
     } catch (err) {
       console.log(err);
       console.log("error in connecting");

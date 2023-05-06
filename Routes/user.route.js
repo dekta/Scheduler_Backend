@@ -122,13 +122,14 @@ UserRouter.post('/signup',validate, async (req, res) => {
 UserRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await UserModel.findOne({ email });
+    let admin = user.isAdmin
     const teacher =  await TeacherModel.findOne({'teacherDetail.email': email});
     const student = await StudentModel.findOne({'studentDetail.email': email})
     // console.log("teacher:",teacher)
     // console.log("student:",student)
     // let u 
     // let stats  = false
-    let userdetails  = teacher || student
+    let userdetails  = teacher || student || admin
     console.log(userdetails)
     // for(let i=0;i<teacher.length;i++){
     //     let ele = teacher[i]
