@@ -169,7 +169,7 @@ UserRouter.post('/login', async (req, res) => {
         }
         catch (err) {
             console.log(err)
-            res.status(500).send({ "msg": "Somethng went wrong" })
+            res.status(500).send({ "msg": "Something went wrong" })
         }
     }
     else {
@@ -181,7 +181,6 @@ UserRouter.post('/login', async (req, res) => {
 //logout
 UserRouter.post("/logout",async(req,res)=>{
     //console.log("logout")
-    
     try{
         const {token} = req.body
         console.log(token)
@@ -206,7 +205,7 @@ UserRouter.post("/logout",async(req,res)=>{
       
     }
     catch(err){
-        res.status(500).send({ "msg": "Somethng went wrong" })
+        res.status(500).send({ "msg": "Something went wrong" })
     }
    
 })
@@ -264,7 +263,7 @@ UserRouter.post('/forgotPasword',async (req,res)=>{
     }
     catch(err){
         console.log(err);
-        res.status(500).send({ "msg": "Somethng went wrong" })
+        res.status(500).send({ "msg": "Something went wrong" })
     }
 })
 

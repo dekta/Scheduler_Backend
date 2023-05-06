@@ -67,7 +67,7 @@ app.get('/auth/google',
 
 
 
-app.listen(9090, async () => {
+app.listen(8090, async () => {
     try {
       await connection;
       console.log("connected to db");
