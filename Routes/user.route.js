@@ -152,6 +152,7 @@ UserRouter.post('/login', async (req, res) => {
                     res.status(500).send({ 'msg': "Something went wrong" })
                 }
                 else if (result) {
+                    console.log(result)
                     const token = jwt.sign({userid:userdetails._id,isAdmin:user.isAdmin,isActive:true,email:user.email}, process.env.Token_Pass, { expiresIn: '5d' })
                     let update = {isActive:true}
                     let filter = {email:email}
