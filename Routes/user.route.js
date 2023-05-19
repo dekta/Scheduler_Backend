@@ -7,11 +7,11 @@ var cookieParser = require('cookie-parser')
 const Redis = require('ioredis');
 const cors = require("cors");
 
-// const redis = new Redis({
-//     port: 14080,
-//     host: process.env.redish_host,
-//     password: process.env.redish_password
-// })
+const redis = new Redis({
+    port: 14080,
+    host: process.env.redish_host,
+    password: process.env.redish_password
+})
 
 
 const UserRouter = express.Router()
@@ -44,7 +44,7 @@ UserRouter.post('/signup',validate, async (req, res) => {
                     await user.save() 
                     const signupToken = jwt.sign({userid:user._id,email:user.email,name:user.name}, process.env.Signup_pass)
                     console.log(signupToken)
-                    Redis.set('signupToken',signupToken)
+                    redis.set('signupToken',signupToken)
                     SendMail(user)
                     res.status(201).send({"msg":"congrats! signup successfully"})
             
