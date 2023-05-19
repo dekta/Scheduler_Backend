@@ -42,6 +42,9 @@ UserRouter.post('/signup',validate, async (req, res) => {
                 else{
                     const user = new UserModel({name,email,password:hash})
                     await user.save() 
+                    const signupToken = jwt.sign({userid:user._id,email:user.email,name:user.name}, process.env.Signup_pass)
+                    console.log(signupToken)
+                    Redis.set('signupToken',signupToken)
                     SendMail(user)
                     res.status(201).send({"msg":"congrats! signup successfully"})
             
@@ -64,9 +67,6 @@ UserRouter.post('/signup',validate, async (req, res) => {
 
 
 function SendMail(sUser){
-    const signupToken = jwt.sign({userid:sUser._id,email:sUser.email,name:sUser.name}, process.env.Signup_pass)
-    console.log(signupToken)
-   // redis.set('signupToken',signupToken)
     let userName = sUser.name
                     const transporter = nodemailer.createTransport({
                         service: 'gmail',
