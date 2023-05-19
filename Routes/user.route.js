@@ -42,7 +42,6 @@ UserRouter.post('/signup',validate, async (req, res) => {
                 else{
                     const user = new UserModel({name,email,password:hash})
                     await user.save() 
-                    SendMail(user)
                     res.status(201).send({"msg":"congrats! signup successfully"})
             
                 }
@@ -63,58 +62,58 @@ UserRouter.post('/signup',validate, async (req, res) => {
 
 
 
-function SendMail(sUser){
-    const signupToken = jwt.sign({userid:sUser._id,email:sUser.email,name:sUser.name}, process.env.Signup_pass)
-    console.log(signupToken)
-   // redis.set('signupToken',signupToken)
-    let userName = sUser.name
-                    const transporter = nodemailer.createTransport({
-                        service: 'gmail',
-                        auth: {
-                            type: 'OAuth2',
-                            user: process.env.EMAIL,
-                            pass: process.env.PASSWORD,
-                            clientId: process.env.CLIENT_ID,
-                            clientSecret: process.env.CLIENT_SECRET,
-                            refreshToken: process.env.REFRESH_TOKEN
-                        }
-                    });
+// function SendMail(sUser){
+//     const signupToken = jwt.sign({userid:sUser._id,email:sUser.email,name:sUser.name}, process.env.Signup_pass)
+//     console.log(signupToken)
+//    // redis.set('signupToken',signupToken)
+//     let userName = sUser.name
+//                     const transporter = nodemailer.createTransport({
+//                         service: 'gmail',
+//                         auth: {
+//                             type: 'OAuth2',
+//                             user: process.env.EMAIL,
+//                             pass: process.env.PASSWORD,
+//                             clientId: process.env.CLIENT_ID,
+//                             clientSecret: process.env.CLIENT_SECRET,
+//                             refreshToken: process.env.REFRESH_TOKEN
+//                         }
+//                     });
 
-                    const mailConfigurations = {
-                        from: process.env.EMAIL,
-                        to: sUser.email,
-                        subject: `Thank you for registering.Take control of your career with Scheduler`,   
-                        html:`
-                        <div style="width:100%;">
-                            <div style="width:50%;margin:auto;background:transparant ;display:flex; justify-content: center;">
-                                <img style="width:50%" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQj_PwLMKiU1feYbcoxs34k3Gg7cQbVH0xdG98cM-8-6YSvh-chAqE9NA48Sjad8qx9xeg&usqp=CAU"/>
-                            </div>
-                            <h1 style="text-align:center;"> Hello ${userName}</h1>
-                            <div style="text-align:center; font-family:robot,'sens-serif'; display:flex; width:100%">
-                                <p style="width: 50%; font-family:robot,'sens-serif'; font-size: 25px;">Thank you  for registering with Scheduler, India's fastest growing career institute <br> Visit our website www.example.com for latest updates. </p>
-                                <img style="width:50%" src="https://i.pinimg.com/originals/b0/a5/11/b0a511db97423cae060e667746da77de.jpg"/>
-                            </div>
-                            <div style="width:fit-content;margin:50px auto;">
+//                     const mailConfigurations = {
+//                         from: process.env.EMAIL,
+//                         to: sUser.email,
+//                         subject: `Thank you for registering.Take control of your career with Scheduler`,   
+//                         html:`
+//                         <div style="width:100%;">
+//                             <div style="width:50%;margin:auto;background:transparant ;display:flex; justify-content: center;">
+//                                 <img style="width:50%" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQj_PwLMKiU1feYbcoxs34k3Gg7cQbVH0xdG98cM-8-6YSvh-chAqE9NA48Sjad8qx9xeg&usqp=CAU"/>
+//                             </div>
+//                             <h1 style="text-align:center;"> Hello ${userName}</h1>
+//                             <div style="text-align:center; font-family:robot,'sens-serif'; display:flex; width:100%">
+//                                 <p style="width: 50%; font-family:robot,'sens-serif'; font-size: 25px;">Thank you  for registering with Scheduler, India's fastest growing career institute <br> Visit our website www.example.com for latest updates. </p>
+//                                 <img style="width:50%" src="https://i.pinimg.com/originals/b0/a5/11/b0a511db97423cae060e667746da77de.jpg"/>
+//                             </div>
+//                             <div style="width:fit-content;margin:50px auto;">
                             
-                            </div>
-                            <h4>Regards, <br> Schedular Team</h4>
-                        </div>`
+//                             </div>
+//                             <h4>Regards, <br> Schedular Team</h4>
+//                         </div>`
               
-                    };
+//                     };
                     
     
-                    transporter.sendMail(mailConfigurations, async function (error, info) {
-                        if (error) {
-                            console.log('ERR: Error from nodemailer')
-                            console.log(error)
-                            return 
-                        } else {
-                            console.log('Email Sent Successfully');
-                            return 
-                        }
-                    })
+//                     transporter.sendMail(mailConfigurations, async function (error, info) {
+//                         if (error) {
+//                             console.log('ERR: Error from nodemailer')
+//                             console.log(error)
+//                             return 
+//                         } else {
+//                             console.log('Email Sent Successfully');
+//                             return 
+//                         }
+//                     })
 
-}
+// }
 
 
 
