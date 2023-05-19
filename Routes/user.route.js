@@ -7,14 +7,12 @@ var cookieParser = require('cookie-parser')
 const Redis = require('ioredis');
 const cors = require("cors");
 
-const redis = new Redis({
-    port: 14080,
-    host: process.env.redish_host,
-    password: process.env.redish_password
-})
+// const redis = new Redis({
+//     port: 14080,
+//     host: process.env.redish_host,
+//     password: process.env.redish_password
+// })
 
-
-const {UserModel}=require('../Models/User.model');
 
 const UserRouter = express.Router()
 
@@ -22,7 +20,8 @@ UserRouter.use(cookieParser())
 UserRouter.use(cors({
     origin: '*'
 }))
-
+UserRouter.use(express.json())
+const {UserModel}=require('../Models/User.model');
 const {validate} = require('../middlewares/signup_validate');
 const { TeacherModel } = require('../Models/teacher.model');
 const {StudentModel} = require("../Models/student.model")
@@ -32,30 +31,43 @@ const {StudentModel} = require("../Models/student.model")
 
 //signup
 UserRouter.post('/signup',validate, async (req, res) => {
-    const { email, password, name ,avatar,isAdmin,isActive} = req.body;
-    const check = await UserModel.find({ email });
-    if(!check.length){
-        bcrypt.hash(password, 6, async function (err, hash) {
-            if (err) {
-                res.status(500).send({ 'msg': "Something went wrong in signup" })
-            }
-            else {
-                try {
+    const {email,password,name} = req.body;
+    const exists = await UserModel.find({ email });
+    try{
+        if(exists.length == 0){
+            bcrypt.hash(password,5, async function(err,hash){
+                if(err){
+                    res.send("wrong")
+                }
+                else{
+                    const user = new UserModel({name,email,password:hash})
+                    await user.save() 
+                    SendMail(user)
+                    res.status(201).send({"msg":"congrats! signup successfully"})
+            
+                }
+        
+            })
+        }
+        else{
+            res.status(400).send({"msg":"user already exists"})
+        }
+        
+    }
+    catch(err){
+        res.send({"Error":err})
+    }
+   
+   
+})
 
-                    let userId = Math.ceil(Math.random() * 10000)
-                    const user= new UserModel({ email, password: hash, name, avatar,isActive,isAdmin })
-                    await  user.save()
 
 
-                    let u = await UserModel.findOne({email})
-                    //console.log(u._id,"hi")
-
-                    const signupToken = jwt.sign({userid:u._id,email:email,name:name}, process.env.Signup_pass)
-                    console.log(signupToken)
-                    redis.set('signupToken',signupToken)
-
-
-                    let userName = name
+function SendMail(sUser){
+    const signupToken = jwt.sign({userid:sUser._id,email:sUser.email,name:sUser.name}, process.env.Signup_pass)
+    console.log(signupToken)
+   // redis.set('signupToken',signupToken)
+    let userName = sUser.name
                     const transporter = nodemailer.createTransport({
                         service: 'gmail',
                         auth: {
@@ -67,10 +79,10 @@ UserRouter.post('/signup',validate, async (req, res) => {
                             refreshToken: process.env.REFRESH_TOKEN
                         }
                     });
-    
+
                     const mailConfigurations = {
                         from: process.env.EMAIL,
-                        to: email,
+                        to: sUser.email,
                         subject: `Thank you for registering.Take control of your career with Scheduler`,   
                         html:`
                         <div style="width:100%;">
@@ -95,55 +107,30 @@ UserRouter.post('/signup',validate, async (req, res) => {
                         if (error) {
                             console.log('ERR: Error from nodemailer')
                             console.log(error)
-                            res.status(500).send({ "msg": "Something went wrong in mail sending" })
+                            return 
                         } else {
                             console.log('Email Sent Successfully');
-                            res.status(201).send({ "msg": `Signup Successfully`, "email": email })
-    
+                            return 
                         }
                     })
-                }
 
-                catch (err) {
-                    console.log(err);
-                    res.status(401).send({ "msg": "Something went wrong" })
-                }
-            }
-        })
-    }
-    else{
-        res.send("User already exist")
-    }
-   
-})
+}
+
+
 
 
 //login
+
+
+
 UserRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await UserModel.findOne({ email });
     let admin = user.isAdmin
     const teacher =  await TeacherModel.findOne({'teacherDetail.email': email});
     const student = await StudentModel.findOne({'studentDetail.email': email})
-    // console.log("teacher:",teacher)
-    // console.log("student:",student)
-    // let u 
-    // let stats  = false
     let userdetails  = teacher || student || admin
     console.log(userdetails)
-    // for(let i=0;i<teacher.length;i++){
-    //     let ele = teacher[i]
-    //     if(ele.teacherDetail.email==email){
-    //         u = ele._id 
-    //         stats = true
-    //         userdetials=ele
-    //         break      
-    //     }
-    // }
-    // if(stats===false){
-    //     userdetials=student
-    // }
-    //console.log(student)
 
     if (user) {
         try {
