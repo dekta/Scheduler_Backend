@@ -76,11 +76,11 @@ TeacherRouter.get("/getAllTeacher",async(req,res)=>{
 TeacherRouter.patch("/update/TeacherDetails",authenticate, async(req,res)=>{
     const id  = req.body.userid ;
     const data = req.body
-    console.log(data)
+    //console.log(data)
     try{
         let filter = {_id:id}
         await TeacherModel.findOneAndUpdate(filter,data)
-        res.send("data updated")
+        res.send({"msg":"data updated"})
     }
     catch(err){
         res.send(err)
@@ -88,19 +88,6 @@ TeacherRouter.patch("/update/TeacherDetails",authenticate, async(req,res)=>{
    
 })
 
-
-//delete teacher
-TeacherRouter.delete("/delete/TeacherDetails",authenticate, async(req,res)=>{
-    const id  = req.body.userid ;
-    try{
-        await TeacherModel.findOneAndDelete(id)
-        res.send("app deleted")
-    }
-    catch(err){
-        res.send(err)
-    }
-        
-})
 
 
 

@@ -121,8 +121,6 @@ function SendMail(sUser){
 
 //login
 
-
-
 UserRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await UserModel.findOne({ email });
@@ -320,5 +318,3 @@ UserRouter.post('/changePassword',async(req,res)=>{
 module.exports = { UserRouter}
 
 
-
-//https://ik.imagekit.io/8scvrlvcy/path/to/myimage.jpg

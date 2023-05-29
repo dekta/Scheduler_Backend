@@ -63,7 +63,7 @@ StudentRouter.patch("/update/studentDetails",authenticate, async(req,res)=>{
     try{
         let filter = {_id:id}
         await StudentModel.findOneAndUpdate(filter,data)
-        res.send("data updated")
+        res.send({"msg":"data updated"})
     }
     catch(err){
         res.send(err)
@@ -72,18 +72,6 @@ StudentRouter.patch("/update/studentDetails",authenticate, async(req,res)=>{
 })
 
 
-//delete student
-StudentRouter.delete("/delete/StudentDetails",authenticate, async(req,res)=>{
-    const id  = req.body.userid ;
-    try{
-        await StudentModel.findOneAndDelete(id)
-        res.send("app deleted")
-    }
-    catch(err){
-        res.send(err)
-    }
-        
-})
 
 
 
