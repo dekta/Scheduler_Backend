@@ -3,7 +3,7 @@
 
 
 ## API Documentation
-  - Deployed = https://odd-teal-caridea-tux.cyclic.app/
+  - Deployed backend = https://odd-teal-caridea-tux.cyclic.app/
 
 ### User End Point
 
