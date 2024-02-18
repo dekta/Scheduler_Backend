@@ -8,7 +8,7 @@ const Redis = require('ioredis')
 const cors = require('cors')
 
 const redis = new Redis({
-  port: redis_port,
+  port: process.env.redis_port,
   host: process.env.redis_host,
   password: process.env.redis_password,
   username: 'default'
