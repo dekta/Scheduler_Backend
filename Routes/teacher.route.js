@@ -9,7 +9,7 @@ const { authenticate } = require('../middlewares/AdminAuthentication')
 const { UserModel } = require('../Models/User.model')
 
 const redis = new Redis({
-  port: 17093,
+  port: process.env.redis_port,
   host: process.env.redis_host,
   password: process.env.redis_password,
   username: 'default'
